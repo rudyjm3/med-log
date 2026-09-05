@@ -43,5 +43,11 @@ function db(): PDO
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
 
+    // Force the session clock to UTC so CURRENT_TIMESTAMP/NOW() and stored
+    // TIMESTAMP columns are always UTC, regardless of the MySQL server's own
+    // SYSTEM timezone setting — the frontend (fmtNoteDate in app.js) relies
+    // on that guarantee to convert timestamps to the viewer's local time.
+    $pdo->exec("SET time_zone = '+00:00'");
+
     return $pdo;
 }
