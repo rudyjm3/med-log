@@ -6294,7 +6294,10 @@ let notesModalMedicationId = '';
 
 const fmtNoteDate = (ts) => {
   if (!ts) return '';
-  const d = new Date(ts.replace ? ts.replace(' ', 'T') : ts);
+  // Server timestamps are naive UTC ("YYYY-MM-DD HH:MM:SS"); mark them as UTC
+  // so the Date parses correctly instead of being read as local time.
+  const isoUtc = ts.replace(' ', 'T') + 'Z';
+  const d = new Date(isoUtc);
   return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
     + ' at ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 };
